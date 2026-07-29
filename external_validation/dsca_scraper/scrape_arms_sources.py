@@ -171,6 +171,117 @@ def scrape_dsca_turkey_selenium(debug: bool = False) -> list[Notification]:
     return results
 
 
+def scrape_dsca_library_selenium(keyword: str = "Turkey", debug: bool = False,
+                                   download_dir: str = "dsca_pdfs") -> list[dict]:
+    """
+    DSCA'nin TAM ARSIVINI (Major Arms Sales Library) tarar -- 'Tag' sayfasinin
+    aksine, bu arsiv 2009'a kadar giden TUM tarihsel bildirimleri iceriyor.
+
+    NASIL CALISIYOR (Chrome'da elle kesfedilip dogrulandi):
+    1. https://www.dsca.mil/.../Major-Arms-Sales-Library?igsearch=<keyword>
+       adresi, arama kutusuna yazip 'Search' tuslamanin ayni sonucunu direkt
+       URL ile verir -- VIEWSTATE/form doldurma derdi yok.
+    2. Sonuc sayfasindaki her PDF linki media.defense.gov'da barinir (DSCA'nin
+       kendi alan adi degil) -- bu yuzden Akamai bu PDF indirmelerini
+       ENGELLEMEYEBILIR, requests ile denenir; olmazsa Selenium'a duser.
+
+    Selenium GEREKLI (sadece DSCA arama sayfasi icin) -- Akamai plain
+    requests'i burada da engelliyor.
+    """
+    from selenium import webdriver
+    from selenium.webdriver.chrome.service import Service
+    from selenium.webdriver.chrome.options import Options
+    from selenium.webdriver.common.by import By
+    from webdriver_manager.chrome import ChromeDriverManager
+    import os
+
+    print(f"DSCA Major Arms Sales Library taraniyor -- anahtar kelime: '{keyword}'...")
+
+    options = Options()
+    options.add_argument("--disable-blink-features=AutomationControlled")
+    options.add_argument("--window-size=1280,900")
+
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    results = []
+    try:
+        search_url = (
+            "https://www.dsca.mil/Press-Media/Major-Arms-Sales/"
+            f"Major-Arms-Sales-Library?igsearch={keyword}"
+        )
+        driver.get(search_url)
+        time.sleep(2)
+
+        pdf_links = driver.find_elements(By.CSS_SELECTOR, "a[href$='.PDF'], a[href$='.pdf']")
+        if debug:
+            print(f"  [DEBUG] {len(pdf_links)} PDF linki bulundu")
+
+        for link in pdf_links:
+            url = link.get_attribute("href")
+            # Dosya adindan CN (bildiri) numarasini cikart, orn. "TURKEY_13-56.PDF" -> "13-56"
+            fname = url.split("/")[-1]
+            cn_match = re.search(r"(\d{2}-\d{2,3})", fname)
+            cn_number = cn_match.group(1) if cn_match else ""
+            results.append({"cn_number": cn_number, "filename": fname, "pdf_url": url})
+
+        print(f"  -> {len(results)} arsiv kaydi bulundu.")
+    finally:
+        driver.quit()
+
+    # PDF'leri indir (once requests ile dene -- media.defense.gov farkli sunucu)
+    os.makedirs(download_dir, exist_ok=True)
+    for r in results:
+        local_path = os.path.join(download_dir, r["filename"].replace("%20", "_"))
+        if os.path.exists(local_path):
+            r["local_path"] = local_path
+            continue
+        try:
+            resp = SESSION.get(r["pdf_url"], timeout=20)
+            resp.raise_for_status()
+            with open(local_path, "wb") as f:
+                f.write(resp.content)
+            r["local_path"] = local_path
+            if debug:
+                print(f"  [DEBUG] indirildi: {local_path}")
+        except requests.RequestException as e:
+            print(f"  [HATA] {r['pdf_url']} indirilemedi: {e}")
+            r["local_path"] = ""
+        time.sleep(1)
+
+    return results
+
+
+def extract_dsca_pdf_details(pdf_path: str) -> dict:
+    """Indirilen bir DSCA CN PDF'inden tarih, maliyet ve konu basligini cikartir."""
+    import pdfplumber
+
+    details = {"date": "", "estimated_cost": "", "subject_line": ""}
+    try:
+        with pdfplumber.open(pdf_path) as pdf:
+            text = "\n".join((p.extract_text() or "") for p in pdf.pages[:2])
+    except Exception as e:
+        details["error"] = str(e)
+        return details
+
+    date_match = re.search(
+        r"(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},\s+\d{4}",
+        text,
+    )
+    if date_match:
+        details["date"] = date_match.group(0)
+
+    cost_match = re.search(r"estimated cost of \$([\d.,]+\s*(million|billion))", text, re.IGNORECASE)
+    if cost_match:
+        details["estimated_cost"] = cost_match.group(0)
+
+    # Ilk satirlardan konu basligini yakalamaya calis (genelde "Republic of X - Y" formatinda)
+    subject_match = re.search(r"(Republic of [A-Za-z]+.{0,80})", text)
+    if subject_match:
+        details["subject_line"] = subject_match.group(0)
+
+    return details
+
+
+
 def scrape_dsca_turkey(debug: bool = False) -> list[Notification]:
     """
     DSCA'nin Turkiye etiketli sayfasindan bildirimleri cek.
@@ -286,7 +397,7 @@ def search_pdf_for_turkey(pdf_path: str, keyword: str = "Türkei") -> list[str]:
     return hits
 
 
-def write_excel(dsca_results, state_results, output_path):
+def write_excel(dsca_results, state_results, output_path, library_results=None):
     wb = Workbook()
     ws = wb.active
     ws.title = "DSCA_Bildirimleri"
@@ -322,7 +433,28 @@ def write_excel(dsca_results, state_results, output_path):
         ws2.cell(row=row, column=5, value=n.url)
         row += 1
 
-    for sheet in (ws, ws2):
+    sheets_to_size = [ws, ws2]
+
+    if library_results:
+        ws3 = wb.create_sheet("DSCA_Library_Historical")
+        lib_headers = ["CN_Numarasi", "Tarih", "Konu", "Tahmini_Maliyet", "Dosya_Adi", "PDF_URL", "Yerel_Dosya"]
+        for col, h in enumerate(lib_headers, start=1):
+            cell = ws3.cell(row=1, column=col, value=h)
+            cell.font = header_font
+            cell.fill = header_fill
+        row = 2
+        for r in library_results:
+            ws3.cell(row=row, column=1, value=r.get("cn_number", ""))
+            ws3.cell(row=row, column=2, value=r.get("date", ""))
+            ws3.cell(row=row, column=3, value=r.get("subject_line", ""))
+            ws3.cell(row=row, column=4, value=r.get("estimated_cost", ""))
+            ws3.cell(row=row, column=5, value=r.get("filename", ""))
+            ws3.cell(row=row, column=6, value=r.get("pdf_url", ""))
+            ws3.cell(row=row, column=7, value=r.get("local_path", ""))
+            row += 1
+        sheets_to_size.append(ws3)
+
+    for sheet in sheets_to_size:
         for col_cells in sheet.columns:
             length = max(len(str(c.value)) if c.value else 0 for c in col_cells)
             sheet.column_dimensions[col_cells[0].column_letter].width = min(max(length + 2, 10), 60)
@@ -335,6 +467,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", default="turkiye_kaynak_taramasi.xlsx")
     parser.add_argument("--debug", action="store_true")
+    parser.add_argument("--skip-library", action="store_true",
+                         help="Tam arsiv taramasini (uzun surebilir) atla")
     args = parser.parse_args()
 
     dsca_results = scrape_dsca_turkey(debug=args.debug)
@@ -350,7 +484,22 @@ def main():
             print(f"  [HATA] Selenium ile de basarisiz oldu: {e}")
 
     state_results = scrape_state_dept_turkey(debug=args.debug)
-    write_excel(dsca_results, state_results, args.output)
+
+    library_results = []
+    if not args.skip_library:
+        try:
+            library_results = scrape_dsca_library_selenium(keyword="Turkey", debug=args.debug)
+            print("  PDF'lerden tarih/maliyet/konu cikartiliyor...")
+            for r in library_results:
+                if r.get("local_path"):
+                    details = extract_dsca_pdf_details(r["local_path"])
+                    r.update(details)
+        except ImportError:
+            print("  [HATA] Selenium/pdfplumber kurulu degil.")
+        except Exception as e:
+            print(f"  [HATA] Kutuphane taramasi basarisiz: {e}")
+
+    write_excel(dsca_results, state_results, args.output, library_results=library_results)
 
 
 if __name__ == "__main__":
