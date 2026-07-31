@@ -1,76 +1,29 @@
 # Türkiye Defence Industry: Component-Level Dependency Analysis
 
-**Devam eden doktora tez sahası çalışması (PhD dissertation fieldwork) · NLP / text-as-data**
+**Ongoing PhD dissertation fieldwork · NLP / text-as-data**
 
-Bu depo, geç kapitalistleşen ülkelerdeki savunma sanayisi gelişimini inceleyen daha geniş bir
-araştırma programının parçası olarak, Türkiye'nin dört ana savunma platformunda (Altay tankı,
-T129 ATAK, Hisar hava savunma sistemi, TAI KAAN) bileşen düzeyinde yabancı tedarik
-bağımlılığını haritalandırmayı amaçlar. Amaç, SIPRI'nin platform düzeyindeki transfer
-verisindeki bir boşluğu — hangi alt sistemin (motor, sensör, vb.) hangi platforma, hangi
-tedarikçiden geldiğine dair açık bir bağlantının bulunmaması — kısmen kapatacak bir
-**kriterlik matrisi** (functional necessity × export restriction × substitution availability)
-geliştirmektir.
+This repository is the empirical work behind one strand of a broader research programme on defence-industry development in late-industrialising states, using Türkiye as the case. The specific question here: SIPRI's Arms Transfers Database flags a platform as "local production," but doesn't say which foreign subsystems (engines, sensors, naval weapons, etc.) that local production actually depends on. This project maps that dependency, across four core platforms (Altay tank, T129 ATAK, Hisar air-defence, TAI KAAN) and a wider set of historical Turkish procurement, and is building toward a criticality matrix (functional necessity × export restriction × substitution availability) over that mapping.
 
-> Bu, aktif olarak devam eden bir saha çalışmasıdır; script'ler ve veri kapsamı zaman içinde
-> genişleyecektir.
+**This is active fieldwork, not a finished dataset.** See [`FINDINGS.md`](FINDINGS.md) for current interim results and [`research-log.md`](research-log.md) for a dated, granular log of each verification pass.
 
-## Metodolojik yaklaşım
+## What's here
 
-Bağımlılık iddiaları üç ayrı, birbirini tamamlayan kaynaktan çapraz doğrulanır:
+**`news_pipeline/`** — an automated Turkish-language news scraping and deduplication pipeline (530+ articles across the four platforms), with BERTopic topic modelling used to surface which platforms/themes (embargo mentions, indigenous-substitute development, supplier-agreement news) are most prominent in press coverage. Includes both the production scripts and the original pilot/multi-platform notebooks.
 
-1. **SIPRI Arms Transfers Database** üzerinden istatistiksel/zamansal eşleştirme
-   (`criticality_matrix/`) — yerli üretim platformları ile aynı döneme denk gelen alt sistem
-   ithalatlarını aday bağımlılık olarak işaretler.
-2. **ABD (DSCA/State Dept.) ve Almanya (Rüstungsexportbericht) resmi ihracat bildirimleri**
-   (`external_validation/`) — SIPRI'nin kapsamadığı/eşik altı kalan vakalar için resmi ihracat
-   izni kayıtlarından bağımsız doğrulama.
-3. **Türkçe basın taraması** (`news_pipeline/`) — 530+ haberden oluşan otomatik toplanmış ve
-   tekilleştirilmiş bir korpus üzerinde konu modelleme (BERTopic) ile ambargo/ihracat kısıtlaması,
-   yerli ikame geliştirme ve yabancı tedarik anlaşması temalarının platform bazında izlenmesi.
+**`criticality_matrix/`** — the core dependency-mapping work: an initial purely-statistical approach (SIPRI temporal co-occurrence matching) that was tested, found to have no discriminating power, and documented as a negative result; and the multi-source triangulation method that replaced it. See [`criticality_matrix/README.md`](criticality_matrix/README.md) for the full writeup, including the code and the reproducible negative-result numbers. Nested subsystem chains (a platform depending on several foreign suppliers at once) and platform-evolution-over-time (e.g. off-the-shelf → licensed production) are the current active threads.
 
-Ayrıca `budget_crossvalidation/` klasöründe, Türkiye'nin resmî bütçe kanunu rakamları ile
-Muhasebat gerçekleşme istatistikleri SIPRI Military Expenditure Database ile çapraz
-karşılaştırma için tek bir tidy veri setinde birleştirilir.
+**`external_validation/`** — scrapers for US DSCA Major Arms Sales notifications and German *Rüstungsexportbericht* (2014–2024), used to independently corroborate dependency claims that fall outside or below SIPRI's coverage.
 
-**Önemli sınırlama:** SIPRI/DSCA/basın eşleştirmeleri istatistiksel ve zamansal yakınlığa
-dayanır; kanıtlanmış bir tedarik zinciri bağlantısı değildir. Her script kendi çıktısında bu
-sınırlamayı ve manuel doğrulama için bir şablonu (`To_Verify_External`) ayrıca üretir.
+**`budget_crossvalidation/`** — a secondary, largely-complete piece of work: Turkish official defence-budget-law figures merged with Muhasebat (Treasury) realised-expenditure statistics into one tidy dataset, for cross-validation against SIPRI's Military Expenditure Database.
 
-## Klasör yapısı
+## Method summary
 
-```
-criticality_matrix/         SIPRI trade_register.csv üzerinden platform x alt sistem eşleştirmesi
-                             ve üç katmanlı zincirleme bağımlılık analizi (orijinal tedarikçi ->
-                             Türkiye [lisanslı üretim] -> üçüncü ülke)
+Every dependency claim is checked against independent, named sources rather than accepted from any single one — see [`criticality_matrix/README.md`](criticality_matrix/README.md) for the full method and [`FINDINGS.md`](FINDINGS.md) for what's confirmed so far. In short: SIPRI's own data plus its Supplier/Recipient re-export matching, US/German official export-control records, IISS/CFPPR's compiled procurement history, and manufacturer/press reporting, each explicitly labelled by which of these established it — including cases that were checked and remain unconfirmed.
 
-external_validation/
-  dsca_scraper/              DSCA (Major Arms Sales) ve State Dept. bildirimlerini tarayan scraper;
-                              indirilen CN PDF'leri
-  german_reports/             Almanya Rüstungsexportbericht'lerini (2014-2024) indirip 'Türkei'
-                              geçen yerleri tarayan script
+## Data note
 
-budget_crossvalidation/      Türkiye savunma bütçesi (kanun + gerçekleşme) verisinin tidy
-                              formatta birleştirilmesi, SIPRI Milex ile çapraz kontrol
+Raw and processed data files (`.csv`, `.xlsx`, `.pdf`) are intentionally excluded from this repository via `.gitignore` — only code, notebooks, and methodology are shared here, since the underlying working dataset mixes confirmed and unconfirmed claims. Data files stay local. See [`FINDINGS.md`](FINDINGS.md) for the subset of findings that are already sourced well enough to share.
 
-news_pipeline/                Türkçe haber tarama -> tekilleştirme -> BERTopic konu modelleme
-                              pipeline'ı (4 platform: Altay, T129, Hisar, KAAN)
-  01_scrape_news.py            Google News RSS taraması + tam metin çekme
-  02_prepare_for_summary.py    Boş/kısa metin eleme + fuzzy-matching ile tekrar eleme + taslak özet
-  03_topic_model_single_platform.py   Tek platform (Altay) için BERTopic (keşifedici + zero-shot)
-  04_topic_model_multi_platform.py    4 platform birleşik BERTopic + platform x tema çapraz tablosu
-  pilot_altay/                  İlk pilot çalışma (yalnızca Altay) — notebook + ham veri
-  multi_platform_run/           4 platformlu tam çalıştırma — notebook + ham veri
-```
+## Setup
 
-## Veri hakkında not
-
-Ham ve işlenmiş veri dosyaları (`.csv`, `.xlsx`, `.pdf`) bilinçli olarak `.gitignore` ile bu
-depoya dahil edilmiyor; yalnızca kod, notebook'lar ve metodoloji bu depoda paylaşılıyor. Veri
-dosyaları yerel makinede kalmaya devam ediyor.
-
-## Kurulum
-
-Her alt klasördeki script'in başındaki docstring, o script'e özel `pip install` komutunu içerir
-(ör. `pip install bertopic sentence-transformers umap-learn hdbscan` BERTopic script'leri için,
-`pip install selenium webdriver-manager pdfplumber` DSCA scraper için). Script'ler kendi
-klasörlerinden çalıştırılmak üzere tasarlanmıştır (girdi/çıktı dosya adları o klasöre görelidir).
+Each script's docstring documents its own `pip install` requirements (e.g. `pip install bertopic sentence-transformers umap-learn hdbscan` for the topic-modelling scripts, `pip install selenium webdriver-manager pdfplumber` for the DSCA scraper). Scripts are designed to be run from within their own folder (input/output paths are relative to that folder).

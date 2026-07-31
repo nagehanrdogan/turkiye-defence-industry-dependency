@@ -1,0 +1,12 @@
+# Research log
+
+Dated, append-only notes on the dependency-mapping work. Unlike [`FINDINGS.md`](FINDINGS.md) (a periodically-refreshed summary of the current state), entries here are not rewritten — they're a running record of what was checked, when, and what came of it.
+
+---
+
+### 2026-07-31
+
+- **Closed a coverage gap in the SIPRI pull.** The initial SIPRI Trade Register download only covered delivery years 1995–2025. Since IISS/CFPPR's procurement tables start in 1982, this meant any locally-produced design whose deliveries were entirely pre-1995 was silently absent — not flagged as unverified, just missing. Re-pulled 1950–1994 with the column set that includes SIPRI's "Local production" field (the quick Trade Register export omits it; the full transfer-data export with "deliveries broken down by year" includes it) and found 12 designs with no prior record: AGM-12B Bullpup, Bell-205A-1, Berk-class, COBRA MI, EDIC, Fieldguard, MEKO-200T, PC-1638, Rapier-1, SAR-33, SF-260, Type-209/1200. Added as unverified pending external corroboration.
+- **Verified 8 previously-unconfirmed designs** against independent sources (manufacturer/press reporting): ATR-72MP, Göktürk-1, K-10, CN-235 ASW, GDF 35mm, ESSM, AIFV, and M-52T. One design (a "Comandante"-class patrol ship entry) was actively checked and could not be confirmed — Fincantieri's Comandante-class vessels appear to be Italian-Navy-only, with no located link to Turkey; left unverified rather than guessed at.
+- **Reconstructed platform-evolution cases** from IISS's own per-program acquisition-type coding (cross-referencing the same platform family across different years): S-70A Black Hawk (1992, off-the-shelf) → T-70 Black Hawk (2014, licensed production, same supplier); F-4E Phantom (1995, foreign-assisted upgrade) → indigenous "Şimşek" upgrade (2006, no foreign supplier recorded); Barbaros-class frigate (1990, German-licensed) → 2018 modernization (fully domestic); and a reverse case — Anka UAV (2004, no foreign supplier recorded) → Anka-3 (2022, Ukrainian engine dependency appears) — a reminder that dependency doesn't move in only one direction over a platform's life.
+- **Re-ran the temporal co-occurrence test** (see [`criticality_matrix/README.md`](criticality_matrix/README.md)) end-to-end on the current data: 36/36 locally-produced designs (100%) return at least one candidate subsystem match within a ±2-year window, confirming this is not a usable filter on its own. Documented as a negative result rather than discarded quietly.
