@@ -1,8 +1,8 @@
-# Türkiye Defence Industry: Component-Level Dependency Analysis
+# Turkiye Defence Industry: Component-Level Dependency Analysis
 
 **Ongoing PhD dissertation fieldwork · NLP / text-as-data**
 
-This repository is the empirical work behind one strand of a broader research programme on defence-industry development in late-industrialising states, using Türkiye as the case. The specific question here: SIPRI's Arms Transfers Database flags a platform as "local production," but doesn't say which foreign subsystems (engines, sensors, naval weapons, etc.) that local production actually depends on. This project maps that dependency, across four core platforms (Altay tank, T129 ATAK, Hisar air-defence, TAI KAAN) and a wider set of historical Turkish procurement, and is building toward a criticality matrix (functional necessity × export restriction × substitution availability) over that mapping.
+This repository is the empirical work behind one strand of a broader research programme on defence-industry development in late-industrialising states, using Turkiye as the case. The specific question here: SIPRI's Arms Transfers Database flags a platform as "local production," but doesn't say which foreign subsystems (engines, sensors, naval weapons, etc.) that local production actually depends on. This project maps that dependency, across four core platforms (Altay tank, T129 ATAK, Hisar air-defence, TAI KAAN) and a wider set of historical Turkish procurement, and is building toward a criticality matrix (functional necessity × export restriction × substitution availability) over that mapping.
 
 **This is active fieldwork, not a finished dataset.** See [`FINDINGS.md`](FINDINGS.md) for current interim results and [`research-log.md`](research-log.md) for a dated, granular log of each verification pass.
 
