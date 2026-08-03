@@ -4,7 +4,7 @@
 
 ## Research question
 
-SIPRI's Arms Transfers Database records platform-level transfers and flags "local production," but it does not link a locally-produced platform to the specific foreign subsystems (engines, sensors, naval weapons, etc.) it depends on. This project asks: for Turkey's major defence platforms, which foreign components/suppliers is "local production" actually built on, and how has that dependency structure changed over time?
+SIPRI's Arms Transfers Database records platform-level transfers and flags "local production," but it does not link a locally-produced platform to the specific foreign subsystems (engines, sensors, naval weapons, etc.) it depends on. This project asks: for Turkiye's major defence platforms, which foreign components/suppliers is "local production" actually built on, and how has that dependency structure changed over time?
 
 ## Method
 
