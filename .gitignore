@@ -10,3 +10,4 @@ __pycache__/
 .DS_Store
 .env
 .trash_stray_repo/
+research-log.md

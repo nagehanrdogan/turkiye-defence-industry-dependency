@@ -24,20 +24,12 @@ Across 141 locally-produced/procured designs identified so far (from SIPRI's loc
 - **2 (1%)** currently rest on a single secondary source (IISS/CFPPR) alone and remain unresolved despite active search (Bell 412EP, MIM-23 HAWK).
 - **8 (6%)** are partially confirmed or still pending further corroboration.
 
-## Illustrative findings
-
-- **Ada-class corvette (MİLGEM):** component-level sourcing spans six different countries — the US (anti-ship missile, gas turbines), Germany (diesel engines, air-defence missile system), Italy (main gun), France (ESM/ECM), the Netherlands (radar/EO), and the UK (torpedo defence) — a concrete illustration of how "local production" can still carry a wide multinational dependency footprint.
-- **Bayraktar Akıncı:** three-country component sourcing (South Africa, Ukraine, Canada) for EO payloads and engines.
-- **M-52T self-propelled howitzer:** a 1950s US-supplied chassis re-armed in 1995–98 with a German (Rheinmetall) turret and 155mm/L39 gun — a two-stage, two-country dependency chain across four decades.
-- **Dependency trajectories over time**, not just snapshots: e.g. the S-70A Black Hawk moved from an off-the-shelf US purchase (1992) to Turkish licensed production (T-70, 2014) with the same supplier; conversely, the Anka UAV's 2004 baseline listed no foreign supplier, while the upgraded Anka-3 (2022) shows a new engine dependency (Ukraine) — a reminder that dependency reduction is not a one-directional trend.
-
 ## Data note
 
-The full working dataset (spreadsheet-level dependency table, per-row source citations, and rows still pending verification) is kept private while verification is in progress, since it mixes confirmed and unconfirmed claims. This document summarizes the method and the findings that already meet the two-source bar above. Code for the SIPRI temporal-matching script, the DSCA/German export scrapers, and the news-scraping/deduplication pipeline is in this repository (see `README.md`). Dated, granular notes on each verification pass are in [`research-log.md`](research-log.md).
+The full working dataset (spreadsheet-level dependency table, per-row source citations, illustrative findings, and rows still pending verification) is kept private while the research is ongoing, since it mixes confirmed and unconfirmed claims and represents unpublished analysis. This document summarizes the method and headline coverage only. Code for the SIPRI temporal-matching script, the DSCA/German export scrapers, and the news-scraping/deduplication pipeline is in this repository (see `README.md`).
 
 ## Next steps
 
-- Re-check the 2 remaining unresolved cases (Bell 412EP, MIM-23 HAWK) against additional specialist sources (Jane's, SSB statements).
-- Resolve the 8 partially-confirmed/pending rows.
-- Extend the two-stage/multi-stage dependency-evolution mapping (illustrated above for a handful of platforms) systematically across the full dataset — recent additions to this pattern include Atmaca and SOM (French→domestic engine), T625 Gökbey (foreign prototype engine→domestic TEI production engine), and Barbaros MLU (foreign→domestic combat management system).
+- Resolve the remaining unresolved and partially-confirmed cases.
+- Extend the dependency-evolution mapping (off-the-shelf → licensed production → indigenous, and cases where dependency reappears at a later stage) systematically across the full dataset.
 - Build out the criticality-scoring layer (functional necessity × export restriction × substitution availability) as a distinct next phase, once the underlying dependency mapping above is more complete.
