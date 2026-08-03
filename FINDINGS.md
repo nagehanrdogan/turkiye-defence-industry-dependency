@@ -20,9 +20,9 @@ Dependency claims are cross-validated across three independent source types rath
 
 Across 141 locally-produced/procured designs identified so far (from SIPRI's local-production flag, 1950–2025, combined with IISS/CFPPR's 1982–2022 procurement tables):
 
-- **41 (29%)** are corroborated by two or more independent sources.
-- **86 (61%)** currently rest on a single secondary source (IISS/CFPPR) — expected for platforms retained for domestic use only, since these structurally never appear in an international-transfer database like SIPRI's.
-- **14 (10%)** are not yet resolved: 12 were only just identified (see note below) and await verification; 2 were actively checked and could not be confirmed with confidence, and are documented as such rather than guessed at.
+- **131 (93%)** are corroborated by two or more independent sources.
+- **2 (1%)** currently rest on a single secondary source (IISS/CFPPR) alone and remain unresolved despite active search (Bell 412EP, MIM-23 HAWK).
+- **8 (6%)** are partially confirmed or still pending further corroboration.
 
 ## Illustrative findings
 
@@ -37,7 +37,7 @@ The full working dataset (spreadsheet-level dependency table, per-row source cit
 
 ## Next steps
 
-- Extend independent verification to the remaining 12 designs identified via the extended 1950–1994 SIPRI pull.
-- Re-check the 2 unresolved cases (ambiguous designation matches) against additional specialist sources (Jane's, SSB statements).
-- Extend the two-stage/multi-stage dependency-evolution mapping (illustrated above for a handful of platforms) systematically across the full dataset.
+- Re-check the 2 remaining unresolved cases (Bell 412EP, MIM-23 HAWK) against additional specialist sources (Jane's, SSB statements).
+- Resolve the 8 partially-confirmed/pending rows.
+- Extend the two-stage/multi-stage dependency-evolution mapping (illustrated above for a handful of platforms) systematically across the full dataset — recent additions to this pattern include Atmaca and SOM (French→domestic engine), T625 Gökbey (foreign prototype engine→domestic TEI production engine), and Barbaros MLU (foreign→domestic combat management system).
 - Build out the criticality-scoring layer (functional necessity × export restriction × substitution availability) as a distinct next phase, once the underlying dependency mapping above is more complete.
