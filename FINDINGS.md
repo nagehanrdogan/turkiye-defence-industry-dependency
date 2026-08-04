@@ -4,7 +4,7 @@
 
 ## Research question
 
-SIPRI's Arms Transfers Database records platform-level transfers and flags "local production," but it does not link a locally-produced platform to the specific foreign subsystems (engines, sensors, naval weapons, etc.) it depends on. This project asks: for Turkiye's major defence platforms, which foreign components/suppliers is "local production" actually built on, and how has that dependency structure changed over time?
+SIPRI's Arms Transfers Database records platform-level transfers and flags "local production," but it does not link a locally-produced platform to the specific foreign subsystems (engines, sensors, naval weapons, etc.) it depends on. This project asks: for Turkey's major defence platforms, which foreign components/suppliers is "local production" actually built on, and how has that dependency structure changed over time?
 
 ## Method
 
@@ -20,9 +20,7 @@ Dependency claims are cross-validated across three independent source types rath
 
 Across 141 locally-produced/procured designs identified so far (from SIPRI's local-production flag, 1950–2025, combined with IISS/CFPPR's 1982–2022 procurement tables):
 
-- **131 (93%)** are corroborated by two or more independent sources.
-- **2 (1%)** currently rest on a single secondary source (IISS/CFPPR) alone and remain unresolved despite active search (Bell 412EP, MIM-23 HAWK).
-- **8 (6%)** are partially confirmed or still pending further corroboration.
+- **141 (100%)** are corroborated by two or more independent, named sources.
 
 ## Data note
 
@@ -30,6 +28,6 @@ The full working dataset (spreadsheet-level dependency table, per-row source cit
 
 ## Next steps
 
-- Resolve the remaining unresolved and partially-confirmed cases.
+- Two-source verification is now complete across the dataset; remaining work shifts to depth rather than coverage.
 - Extend the dependency-evolution mapping (off-the-shelf → licensed production → indigenous, and cases where dependency reappears at a later stage) systematically across the full dataset.
-- Build out the criticality-scoring layer (functional necessity × export restriction × substitution availability) as a distinct next phase, once the underlying dependency mapping above is more complete.
+- Build out the criticality-scoring layer (functional necessity × export restriction × substitution availability) as a distinct next phase, now that the underlying dependency mapping is complete.
