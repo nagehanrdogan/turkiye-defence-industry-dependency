@@ -37,10 +37,9 @@ Each dependency claim is labelled by how it was established, rather than present
 
 ## Current state
 
-The working dependency table (verification status, per-claim sourcing, subsystem-chain detail) is kept private while still in progress — see [`../FINDINGS.md`](../FINDINGS.md) for the aggregate numbers and a handful of fully-sourced illustrative cases that are shareable now.
+The working dependency table (verification status, per-claim sourcing, subsystem-chain detail) is kept private while still in progress — see [`../FINDINGS.md`](../FINDINGS.md) for the aggregate numbers and methodology. For more detail, feel free to reach out: nagehan.reyhan22@gmail.com.
 
 ## Active / next
 
 - **Subsystem chains (nested dependency):** several platforms map to *multiple* foreign component suppliers at once rather than one (e.g. a naval platform sourcing its gun, radar, engines and defensive systems from four different countries) — mapping this nested structure systematically, not just per-platform, is the current focus.
 - **Platform evolution over time:** several platforms shift acquisition mode over their lifecycle — e.g. an off-the-shelf purchase later replaced by licensed local production of the same design, or the reverse (a system initially recorded with no foreign supplier later acquiring one at an upgrade stage). Mapping these trajectories, not just point-in-time snapshots, is the other active thread.
-- Extending verification coverage further back in time (SIPRI's transfer data goes back to 1950; this project's pull initially covered only 1995–2025 and has since been extended to close that gap).
