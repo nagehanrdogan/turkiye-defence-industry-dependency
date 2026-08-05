@@ -6,7 +6,7 @@ This folder holds the SIPRI-side analysis for the broader dependency-mapping pro
 
 [`platform_component_dependency.py`](platform_component_dependency.py) implements a simple hypothesis: if a locally-produced platform ("Local production: Yes" in SIPRI) is delivered around the same time as a subsystem import (engines, sensors, naval weapons, etc.) from a *different* supplier country, treat that as a **candidate** dependency link.
 
-Running it against Turkey's SIPRI Trade Register data (±2-year matching window):
+Running it against Turkiye's SIPRI Trade Register data (±2-year matching window):
 
 ```
 Local-production platform deliveries: 172 (36 unique designs)
